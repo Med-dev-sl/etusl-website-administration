@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit My Leadership Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f9fafb;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="file"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .current-photo {
+            margin-top: 10px;
+        }
+        .current-photo img {
+            max-width: 150px;
+            border-radius: 6px;
+        }
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 35px;
+        }
+        button, a.button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        button[type="submit"] {
+            background: #1e40af;
+            color: white;
+            flex: 1;
+        }
+        button[type="submit"]:hover {
+            background: #1e3a8a;
+        }
+        a.button {
+            background: #e5e7eb;
+            color: #1f2937;
+            flex: 1;
+        }
+        a.button:hover {
+            background: #d1d5db;
+        }
+        .help-text {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        .error {
+            color: #dc2626;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Leadership Profile</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.full_name.id_for_label }}">Full Name</label>
+                {{ form.full_name }}
+                {% if form.full_name.errors %}
+                    <div class="error">{{ form.full_name.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.position.id_for_label }}">Position</label>
+                {{ form.position }}
+                {% if form.position.errors %}
+                    <div class="error">{{ form.position.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="error">{{ form.email.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone.id_for_label }}">Phone</label>
+                {{ form.phone }}
+                <p class="help-text">Optional contact number</p>
+                {% if form.phone.errors %}
+                    <div class="error">{{ form.phone.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.photo.id_for_label }}">Photo</label>
+                {% if leadership.photo %}
+                    <div class="current-photo">
+                        <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">Current photo:</p>
+                        <img src="{{ leadership.photo.url }}" alt="{{ leadership.full_name }}">
+                    </div>
+                {% endif %}
+                {{ form.photo }}
+                <p class="help-text">Upload a new photo to replace the current one</p>
+                {% if form.photo.errors %}
+                    <div class="error">{{ form.photo.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.biography.id_for_label }}">Biography</label>
+                {{ form.biography }}
+                <p class="help-text">Tell us about yourself, your achievements, and background</p>
+                {% if form.biography.errors %}
+                    <div class="error">{{ form.biography.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="buttons">
+                <a href="{% url 'staff:leadership_detail' %}" class="button">Cancel</a>
+                <button type="submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
