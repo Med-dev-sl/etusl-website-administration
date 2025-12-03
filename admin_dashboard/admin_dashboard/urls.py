@@ -3,6 +3,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Customize admin site
+admin.site.site_header = "ETUSL WEB Portal"
+admin.site.site_title = "ETUSL WEB Portal"
+admin.site.index_title = "Welcome to ETUSL WEB Portal"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/news/', include('news.urls')),
