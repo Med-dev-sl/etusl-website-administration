@@ -30,7 +30,29 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-xk@2-r$79!ip^yb9$3%lu2*gyz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# Allow localhost and local network access
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,*.local').split(',')
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]  # Remove whitespace
+
+# CSRF trusted origins and ngrok support (dev helper)
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+CSRF_TRUSTED_ORIGINS = [v for v in CSRF_TRUSTED_ORIGINS if v]
+
+# If you set NGROK_URL in the environment, use it; otherwise include common dev ngrok forwarding.
+NGROK_URL = os.getenv('NGROK_URL', 'https://953f63326daf.ngrok-free.app')
+try:
+    from urllib.parse import urlparse
+    parsed = urlparse(NGROK_URL)
+    if parsed.scheme and parsed.netloc:
+        # Add the host (without scheme) to ALLOWED_HOSTS
+        if parsed.netloc not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(parsed.netloc)
+        # Add the origin (with scheme) to CSRF_TRUSTED_ORIGINS
+        origin = f"{parsed.scheme}://{parsed.netloc}"
+        if origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
+except Exception:
+    pass
 
 
 # Application definition
@@ -57,6 +79,8 @@ INSTALLED_APPS = [
     'announcements',
     'academics',
     'admissions',
+    # Visits app for handling visitation requests
+    'visits',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
